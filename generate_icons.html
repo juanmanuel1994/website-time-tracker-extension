@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head><title>Generar iconos</title></head>
+<body>
+<p>Haz clic en el botón para descargar los iconos:</p>
+<button onclick="generate()">Generar y descargar iconos</button>
+<script>
+function drawIcon(size) {
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  const cx = size / 2, cy = size / 2, r = size / 2 - 1;
+
+  // Fondo degradado
+  const bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+  bg.addColorStop(0, '#1e40af');
+  bg.addColorStop(1, '#0f172a');
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.fillStyle = bg;
+  ctx.fill();
+
+  // Borde
+  ctx.strokeStyle = '#3b82f6';
+  ctx.lineWidth = size * 0.04;
+  ctx.beginPath();
+  ctx.arc(cx, cy, r - size * 0.03, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // Esfera del reloj
+  const cr = r * 0.65;
+  ctx.strokeStyle = '#93c5fd';
+  ctx.lineWidth = size * 0.05;
+  ctx.beginPath();
+  ctx.arc(cx, cy, cr, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // Manecilla horaria (apuntando a las 10)
+  const hourAngle = -Math.PI / 2 - Math.PI / 3;
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth = size * 0.06;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(cx, cy);
+  ctx.lineTo(cx + Math.cos(hourAngle) * cr * 0.55, cy + Math.sin(hourAngle) * cr * 0.55);
+  ctx.stroke();
+
+  // Manecilla minutera (apuntando a las 12)
+  ctx.strokeStyle = '#38bdf8';
+  ctx.lineWidth = size * 0.04;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy);
+  ctx.lineTo(cx, cy - cr * 0.75);
+  ctx.stroke();
+
+  // Punto central
+  ctx.fillStyle = '#38bdf8';
+  ctx.beginPath();
+  ctx.arc(cx, cy, size * 0.04, 0, Math.PI * 2);
+  ctx.fill();
+
+  return canvas;
+}
+
+function download(canvas, filename) {
+  const a = document.createElement('a');
+  a.download = filename;
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+}
+
+function generate() {
+  [16, 48, 128].forEach(size => {
+    download(drawIcon(size), `icon${size}.png`);
+  });
+}
+</script>
+</body>
+</html>
